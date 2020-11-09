@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 
 namespace RSACipher
 {
@@ -15,12 +16,29 @@ namespace RSACipher
             //validar si p y q son primos
             if (IsPrimeNumber(p_Number) && IsPrimeNumber(q_Number))
             {
-                int N_number = p_Number + q_Number;
+                int N_number = p_Number * q_Number;
                 //el mínimo para phi es 3
                 phi = (p_Number - 1) * (q_Number - 1);
                 if (phi>2)
                 {
-                    
+                    Get_e();
+                    if (e_number != -1)
+                    {
+                        Get_d();
+                        PrivateKey = new RSAkey();
+                        PrivateKey.modulus = N_number;
+                        PrivateKey.power = d;
+                        PublicKey = new RSAkey();
+                        PublicKey.modulus = N_number;
+                        PublicKey.power = e_number;
+                        return true;
+                    }
+                    else
+                    {
+                        PrivateKey = null;
+                        PublicKey = null;
+                        return false;
+                    }
                 }
                 else
                 {
@@ -49,7 +67,7 @@ namespace RSACipher
             }
             return isPrime;
         }
-        int Get_e()
+        void Get_e()
         {
             int toReturn = -1; ;
             List<int> InvalidNumbers = new List<int>();
@@ -71,7 +89,7 @@ namespace RSACipher
                 }
                 if (InvalidNumbers.Count == (phi - 2)) exit = true;
             }
-            return toReturn;
+            e_number=  toReturn;
         }
 
         public void Get_d()
@@ -93,7 +111,32 @@ namespace RSACipher
             }
             d = Prev2;
         }
-        bool Cipher(string route, out byte[] cipheredMsg, T Key);
-        bool Decipher(string route, out byte[] Message, T Key);
+        bool Cipher(string route, out byte[] cipheredMsg, RSAkey PublicKey)
+        {
+            
+            using (FileStream fs = File.OpenRead(route))
+            {
+                cipheredMsg = new byte[fs.Length];
+                using (BinaryReader reader = new BinaryReader(fs))
+                {
+                    int counter = 0;
+                    while (counter < fs.Length)
+                    {
+                        byte[] ByteArray = reader.ReadBytes(1000);
+                        for (int i = 0; i < ByteArray.Length; i++)
+                        {
+                            cipheredMsg[counter+i]=(byte)Convert.ToInt32
+                        }
+                        counter += 1000;
+                    }
+                    
+                }
+            }
+        }
+        
+        bool Decipher(string route, out byte[] Message, T Key)
+        {
+
+        }
     }
 
