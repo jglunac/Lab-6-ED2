@@ -50,14 +50,26 @@ namespace RSACipher
         int Get_e()
         {
             int toReturn = -1; ;
+            List<int> InvalidNumbers = new List<int>();
             //el mínimo para phi es 3
-            for (int i = 2; i < phi; i++)
+            bool exit = false;
+            var seed = Environment.TickCount;
+            var random = new Random(seed);
+            while (!exit)
             {
-                if (IsPrimeNumber(i))
+                int value = random.Next(2, phi);
+                if (IsPrimeNumber(value) && (phi % value != 0))
                 {
-
+                    toReturn = value;
+                    exit = true;
                 }
+                else if (!InvalidNumbers.Contains(value))
+                {
+                    InvalidNumbers.Add(value);
+                }
+                if (InvalidNumbers.Count == (phi - 2)) exit = true;
             }
+            return toReturn;
         }
         bool Cipher(string route, out byte[] cipheredMsg, T Key);
         bool Decipher(string route, out byte[] Message, T Key);
