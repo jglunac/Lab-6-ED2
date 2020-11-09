@@ -7,6 +7,8 @@ namespace RSACipher
     public class RSA
     {
         int phi;
+        int e_number;
+        int d;
         public bool GetKeys(int p_Number, int q_Number, out RSAkey PrivateKey, out RSAkey PublicKey)
         {
             //p y q pueden ser iguales?
@@ -18,7 +20,7 @@ namespace RSACipher
                 phi = (p_Number - 1) * (q_Number - 1);
                 if (phi>2)
                 {
-                    int e_number;
+                    
                 }
                 else
                 {
@@ -58,6 +60,26 @@ namespace RSACipher
 
                 }
             }
+        }
+
+        public void Get_d()
+        {
+            int Prev1 = phi, Prev2 = e_number, Prev3 = 0, New1 = phi, New2 = 1, New3 = 0, aux = 0; 
+            while (Prev2 != 1)
+            {
+                aux = (Prev1 / Prev2);
+                Prev3 = Prev1 - (aux * Prev2);
+                New3 = New1 - (New2 * aux);
+                if (New3 < 0)
+                {
+                    New3 += phi;
+                }
+                Prev1 = Prev2;
+                Prev2 = Prev3;
+                New1 = New2;
+                New2 = New3;
+            }
+            d = Prev2;
         }
         bool Cipher(string route, out byte[] cipheredMsg, T Key);
         bool Decipher(string route, out byte[] Message, T Key);
