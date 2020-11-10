@@ -19,7 +19,7 @@ namespace RSACipher
                 int N_number = p_Number * q_Number;
                 //el mínimo para phi es 3
                 phi = (p_Number - 1) * (q_Number - 1);
-                if (phi>2)
+                if (phi > 2)
                 {
                     Get_e();
                     if (e_number != -1)
@@ -59,7 +59,7 @@ namespace RSACipher
             bool isPrime = true;
             for (int i = 2; i < number; i++)
             {
-                if(number%i == 0)
+                if (number % i == 0)
                 {
                     isPrime = false;
                     break;
@@ -70,31 +70,19 @@ namespace RSACipher
         void Get_e()
         {
             int toReturn = -1; ;
-            List<int> InvalidNumbers = new List<int>();
-            //el mínimo para phi es 3
-            bool exit = false;
-            var seed = Environment.TickCount;
-            var random = new Random(seed);
-            while (!exit)
+            for (int i = 2; i < phi; i++)
             {
-                int value = random.Next(2, phi);
-                if (IsPrimeNumber(value) && (phi % value != 0))
+                if (IsPrimeNumber(i) && (phi % i != 0))
                 {
-                    toReturn = value;
-                    exit = true;
+                    toReturn = i;
                 }
-                else if (!InvalidNumbers.Contains(value))
-                {
-                    InvalidNumbers.Add(value);
-                }
-                if (InvalidNumbers.Count == (phi - 2)) exit = true;
             }
-            e_number=  toReturn;
+            e_number = toReturn;
         }
 
         public void Get_d()
         {
-            int Prev1 = phi, Prev2 = e_number, Prev3 = 0, New1 = phi, New2 = 1, New3 = 0, aux = 0; 
+            int Prev1 = phi, Prev2 = e_number, Prev3 = 0, New1 = phi, New2 = 1, New3 = 0, aux = 0;
             while (Prev2 != 1)
             {
                 aux = (Prev1 / Prev2);
@@ -113,7 +101,7 @@ namespace RSACipher
         }
         bool Cipher(string route, out byte[] cipheredMsg, RSAkey PublicKey)
         {
-            
+
             using (FileStream fs = File.OpenRead(route))
             {
                 cipheredMsg = new byte[fs.Length];
@@ -125,18 +113,22 @@ namespace RSACipher
                         byte[] ByteArray = reader.ReadBytes(1000);
                         for (int i = 0; i < ByteArray.Length; i++)
                         {
-                            cipheredMsg[counter+i]=(byte)Convert.ToInt32
+                            cipheredMsg[counter + i] = (byte)Convert.ToInt32(4);
                         }
                         counter += 1000;
                     }
-                    
+
                 }
             }
+            cipheredMsg = new byte[3];
+            return true;
         }
-        
-        bool Decipher(string route, out byte[] Message, T Key)
-        {
 
+        bool Decipher(string route, out byte[] Message, RSAkey Key)
+        {
+            Message = new byte[3];
+            return true;
         }
     }
+}
 
