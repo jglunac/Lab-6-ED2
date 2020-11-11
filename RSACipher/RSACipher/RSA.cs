@@ -92,7 +92,7 @@ namespace RSACipher
                 aux = (Prev1 / Prev2);
                 Prev3 = Prev1 - (aux * Prev2);
                 New3 = New1 - (New2 * aux);
-                if (New3 < 0)
+                while (New3 < 0)
                 {
                     New3 += phi;
                 }
@@ -101,7 +101,7 @@ namespace RSACipher
                 New1 = New2;
                 New2 = New3;
             }
-            d = Prev2;
+            d = New3;
         }
         public bool Cipher(string route, out byte[] cipheredMsg, RSAkey PublicKey)
         {
