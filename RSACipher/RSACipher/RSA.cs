@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Numerics;
 
 namespace RSACipher
 {
@@ -10,6 +11,8 @@ namespace RSACipher
         int phi;
         int e_number;
         int d;
+        string incompleteByte;
+        List<byte> FinalBytes;
         public bool GetKeys(int p_Number, int q_Number, out RSAkey PrivateKey, out RSAkey PublicKey)
         {
             //p y q pueden ser iguales?
@@ -53,6 +56,7 @@ namespace RSACipher
                 PublicKey = null;
                 return false;
             }
+
         }
         public bool IsPrimeNumber(int number)
         {
@@ -99,21 +103,51 @@ namespace RSACipher
             }
             d = Prev2;
         }
-        bool Cipher(string route, out byte[] cipheredMsg, RSAkey PublicKey)
+        public bool Cipher(string route, out byte[] cipheredMsg, RSAkey PublicKey)
         {
-
+            int N_bits = Convert.ToString(PublicKey.modulus, 2).Length;
+            e_number = PublicKey.power;
+            bool exit = false;
+            FinalBytes = new List<byte>();
             using (FileStream fs = File.OpenRead(route))
             {
-                cipheredMsg = new byte[fs.Length];
+                
                 using (BinaryReader reader = new BinaryReader(fs))
                 {
                     int counter = 0;
                     while (counter < fs.Length)
                     {
                         byte[] ByteArray = reader.ReadBytes(1000);
-                        for (int i = 0; i < ByteArray.Length; i++)
+                        string actualNumber = "", actualByte = "";
+                        int i = 0;
+                        while (i<ByteArray.Length)
                         {
-                            cipheredMsg[counter + i] = (byte)Convert.ToInt32(4);
+                            int missingbits = N_bits - actualNumber.Length;
+                            if (missingbits > actualByte.Length)
+                            {
+                                actualNumber += actualByte;
+                                actualByte = Convert.ToString(ByteArray[i], 2);
+                                i++;
+                            }
+                            else
+                            {
+                                actualNumber += actualByte.Substring(0, missingbits);
+                                actualByte = actualByte.Remove(0, missingbits);
+                            } 
+                            
+                            if (actualNumber.Length == N_bits)
+                            {
+                                int ToCipher = Convert.ToInt32(actualNumber, 2);
+                                if (ToCipher >= PublicKey.modulus)
+                                {
+                                    ToCipher = Convert.ToInt32(actualNumber.Substring(0, N_bits - 1), 2);
+                                    actualByte = actualNumber[actualNumber.Length - 1] + actualByte;
+                                }
+                                
+                                Calculate_C(ToCipher, PublicKey.modulus);
+                                actualNumber = "";
+
+                            }
                         }
                         counter += 1000;
                     }
@@ -123,8 +157,21 @@ namespace RSACipher
             cipheredMsg = new byte[3];
             return true;
         }
+        void Calculate_C(int m_number, int n_number)
+        {
+            BigInteger c_number = BigInteger.ModPow(m_number, e_number, n_number);
+            
+            string binary_C = Convert.ToString(Convert.ToInt32(c_number), 2);
+            while (binary_C.Length >= 8)
+            {
+                int ToAdd = Convert.ToInt32(binary_C.Substring(0, 8), 2);
+                binary_C = binary_C.Remove(0, 8);
+                FinalBytes.Add((byte)ToAdd);
+            }
+            if (binary_C.Length > 0) incompleteByte = binary_C;
+        }
 
-        bool Decipher(string route, out byte[] Message, RSAkey Key)
+        public bool Decipher(string route, out byte[] Message, RSAkey Key)
         {
             Message = new byte[3];
             return true;
