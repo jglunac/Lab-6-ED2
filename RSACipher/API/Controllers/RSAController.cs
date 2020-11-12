@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO.Compression;
 using RSACipher;
 using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace API.Controllers
 {
@@ -22,7 +23,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        [Route("/rsa/keys/{p}/{q}")]
+        [Route("rsa/keys/{p}/{q}")]
 
         public ActionResult GetKeys(string p, string q)
         {
@@ -33,11 +34,6 @@ namespace API.Controllers
                 string PublicFile = basePath + @"\Temp\Public.key";
                 string PrivateFile = basePath + @"\Temp\Private.key";
 
-                if (System.IO.File.Exists(zipPath))
-                {
-                    System.IO.File.Delete(zipPath);
-                }
-
                 int P = Convert.ToInt32(p);
                 int Q = Convert.ToInt32(q);
 
@@ -45,12 +41,11 @@ namespace API.Controllers
 
                 RSAkey PublicKey = new RSAkey();
                 RSAkey PrivateKey = new RSAkey();
+                if (Cypher.GetKeys(P, Q, out PrivateKey, out PublicKey) == false)
+                {
+                    return StatusCode(500);
+                }
 
-                //Cypher.GetKeys(P, Q, out PrivateKey, out PublicKey);
-                PublicKey.modulus = 6;
-                PublicKey.power = 9;
-                PrivateKey.modulus = 27;
-                PrivateKey.power = 48;
                 using (ZipArchive archive = ZipFile.Open(zipPath, ZipArchiveMode.Create))
                 {
                     using (StreamWriter writter = new StreamWriter(PublicFile))
@@ -69,9 +64,69 @@ namespace API.Controllers
                     archive.CreateEntryFromFile(PrivateFile, "Private.key");
                     System.IO.File.Delete(PublicFile);
                     System.IO.File.Delete(PrivateFile);
-                    return Ok(archive);
+                    
                 }
+                byte[] FileBytes = System.IO.File.ReadAllBytes(zipPath);
+                if (System.IO.File.Exists(zipPath))
+                {
+                    System.IO.File.Delete(zipPath);
+                }
+                else
+                {
+                    return StatusCode(500);
+                }
+                return File(FileBytes, "application/zip", "Keys.zip");
 
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost]
+        [Route("rsa/{name}")]
+        public async Task<ActionResult> Cipher(IFormFile file, IFormFile key, string name)
+        {
+            try
+            {
+                string basePath = _env.ContentRootPath;
+                string TempFile = basePath + @"\Temp\temp.txt";
+                string TempFile2 = basePath + @"\Temp\temp_key.txt";
+                RSAkey Key = new RSAkey();
+                byte[] FileBytes;
+                using (FileStream fs = System.IO.File.Create(TempFile2))
+                {
+                    await key.CopyToAsync(fs);
+                }
+                using (StreamReader reader = new StreamReader(TempFile2))
+                {
+                    string base_string = reader.ReadToEnd();
+                    string[] Key_Attributes = base_string.Split("|");
+                    Key.modulus = int.Parse(Key_Attributes[0]);
+                    Key.power = int.Parse(Key_Attributes[1]);
+                }
+                using (FileStream fs = System.IO.File.Create(TempFile))
+                {
+                    await file.CopyToAsync(fs);
+                }
+                RSA Cipher = new RSA();
+                if (file.FileName.Substring(file.FileName.Length - 3, 3) == "rsa")
+                {
+                    if (Cipher.Decipher(TempFile, out FileBytes, Key) == false)
+                    {
+                        return StatusCode(500);
+                    }
+                    return File(FileBytes, "text/plain", name + ".txt");
+                }
+                else
+                {
+                    if (Cipher.Cipher(TempFile, out FileBytes, Key) == false)
+                    {
+                        return StatusCode(500);
+                    }
+                    return File(FileBytes, "text/plain", name + ".rsa");
+                }
             }
             catch (Exception)
             {
