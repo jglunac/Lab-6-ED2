@@ -88,34 +88,50 @@ namespace API.Controllers
         [Route("rsa/{name}")]
         public async Task<ActionResult> Cipher(IFormFile file, IFormFile key, string name)
         {
-            string basePath = _env.ContentRootPath;
-            string TempFile = basePath + @"\Temp\temp.txt";
-            string TempFile2 = basePath + @"\Temp\temp_key.txt";
-            RSAkey Key = new RSAkey();
-            byte[] FileBytes;
-            using (FileStream fs = System.IO.File.Create(TempFile2))
+            try
             {
-                await key.CopyToAsync(fs);
+                string basePath = _env.ContentRootPath;
+                string TempFile = basePath + @"\Temp\temp.txt";
+                string TempFile2 = basePath + @"\Temp\temp_key.txt";
+                RSAkey Key = new RSAkey();
+                byte[] FileBytes;
+                using (FileStream fs = System.IO.File.Create(TempFile2))
+                {
+                    await key.CopyToAsync(fs);
+                }
+                using (StreamReader reader = new StreamReader(TempFile2))
+                {
+                    string base_string = reader.ReadToEnd();
+                    string[] Key_Attributes = base_string.Split("|");
+                    Key.modulus = int.Parse(Key_Attributes[0]);
+                    Key.power = int.Parse(Key_Attributes[1]);
+                }
+                using (FileStream fs = System.IO.File.Create(TempFile))
+                {
+                    await file.CopyToAsync(fs);
+                }
+                RSA Cipher = new RSA();
+                if (file.FileName.Substring(file.FileName.Length - 3, 3) == "rsa")
+                {
+                    if (Cipher.Decipher(TempFile, out FileBytes, Key) == false)
+                    {
+                        return StatusCode(500);
+                    }
+                    return File(FileBytes, "text/plain", name + ".txt");
+                }
+                else
+                {
+                    if (Cipher.Cipher(TempFile, out FileBytes, Key) == false)
+                    {
+                        return StatusCode(500);
+                    }
+                    return File(FileBytes, "text/plain", name + ".rsa");
+                }
             }
-            using (StreamReader reader = new StreamReader(TempFile2))
-            {
-                string base_string = reader.ReadToEnd();
-                string[] Key_Attributes = base_string.Split("|");
-                Key.modulus = int.Parse(Key_Attributes[0]);
-                Key.power = int.Parse(Key_Attributes[1]);
-            }
-            using (FileStream fs = System.IO.File.Create(TempFile))
-            {
-                await file.CopyToAsync(fs);
-            }
-            RSA Cipher = new RSA();
-            if (Cipher.Decipher(TempFile,out FileBytes, Key) == false)
+            catch (Exception)
             {
                 return StatusCode(500);
             }
-
-            return File(FileBytes, "text/plain", name);
-
         }
     }
 }
