@@ -107,7 +107,7 @@ namespace RSACipher
         public bool Cipher(string route, out byte[] cipheredMsg, RSAkey PublicKey)
         {
             N_bits = Convert.ToString(PublicKey.modulus, 2).Length;
-            if (PublicKey.modulus >0)
+            if (PublicKey.modulus >1)
             {
                 int ToReadBits = N_bits - 1;
                 e_number = PublicKey.power;
@@ -247,7 +247,7 @@ namespace RSACipher
         public bool Decipher(string route, out byte[] Message, RSAkey PrivateKey)
         {
             N_bits = Convert.ToString(PrivateKey.modulus, 2).Length;
-            if (PrivateKey.modulus > 0)
+            if (PrivateKey.modulus > 1)
             {
                 int ToReadBits;
                 if (N_bits >= 8) ToReadBits = N_bits;
