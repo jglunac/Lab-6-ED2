@@ -95,6 +95,10 @@ namespace API.Controllers
                 string TempFile2 = basePath + @"\Temp\temp_key.txt";
                 RSAkey Key = new RSAkey();
                 byte[] FileBytes;
+                if (key.FileName.Substring(key.FileName.Length-3,3) != "key")
+                {
+                    return StatusCode(500);
+                }
                 using (FileStream fs = System.IO.File.Create(TempFile2))
                 {
                     await key.CopyToAsync(fs);
