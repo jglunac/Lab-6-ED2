@@ -1,13 +1,15 @@
 ﻿using System;
-using System.Numerics;
-using System.IO;
 using RSACipher;
+using System.IO;
+using System.Numerics;
 namespace TestConsole
 {
     class Program
     {
         static void Main(string[] args)
         {
+
+
             //int Prev1 = 3120, Prev2 = 17, Prev3 = 0, New1 = 3120, New2 = 1, New3 = 0, aux = 0;
             //while (Prev2 != 1)
             //{
@@ -24,24 +26,81 @@ namespace TestConsole
             //    New2 = New3;
             //}
             //Console.WriteLine(New2);
-            //BigInteger f = BigInteger.ModPow(531, 17, 3233);
+            //BigInteger f = BigInteger.ModPow(64, 17, 3233);
             //Console.WriteLine(f);
             //Console.ReadKey();
-            string Path1 = @"C:\Users\brazi\Desktop\clave";
-            string Path2 = @"C:\Users\brazi\Desktop\clavecifrado";
-            RSA rSA = new RSA();
-            RSAkey rSAkey = new RSAkey();
-            rSAkey.power = 17;
-            rSAkey.modulus = 3233;
-            byte[] arr;
-            rSA.Cipher(Path1, out arr, rSAkey);
-            using (FileStream fs = new FileStream(Path2, FileMode.Create ))
+
+            //string Path1 = @"C:\Users\brazi\Desktop\ESTRUCTURA DE DATOS II\cuento.txt";
+            bool cipher = true;
+            if (cipher)
             {
-                for (int i = 0; i < arr.Length; i++)
+                string Path1 = @"C:\Users\brazi\Desktop\ESTRUCTURA DE DATOS II\easy test.txt";
+                string Path2 = @"C:\Users\brazi\Desktop\clavecifrado.txt";
+                RSA rSA = new RSA();
+                RSAkey rSAkey = new RSAkey();
+
+                rSAkey.power = 17;
+                rSAkey.modulus = 3233;
+                byte[] arr;
+                rSA.Cipher(Path1, out arr, rSAkey);
+
+                using (FileStream fs = new FileStream(Path2, FileMode.Create))
                 {
-                    fs.WriteByte(arr[i]);
+                    for (int i = 0; i < arr.Length; i++)
+                    {
+                        fs.WriteByte(arr[i]);
+                    }
                 }
             }
+            cipher = false;
+            if (!cipher)
+            {
+                string Path1 = @"C:\Users\brazi\Desktop\clavecifrado.txt";
+                string Path2 = @"C:\Users\brazi\Desktop\clavedescifrado.txt";
+                RSA rSA = new RSA();
+                RSAkey rSAkey = new RSAkey();
+                rSAkey.power = 2753;
+
+                rSAkey.modulus = 3233;
+                byte[] arr;
+                rSA.Decipher(Path1, out arr, rSAkey);
+                using (FileStream fs = new FileStream(Path2, FileMode.Create))
+                {
+                    for (int i = 0; i < arr.Length; i++)
+                    {
+                        fs.WriteByte(arr[i]);
+                    }
+                }
+            }
+
+            using (FileStream fs = File.OpenRead(@"C:\Users\brazi\Desktop\ESTRUCTURA DE DATOS II\easy test.txt"))
+            {
+                long L = fs.Length;
+                using (FileStream fs2 = File.OpenRead(@"C:\Users\brazi\Desktop\clavedescifrado.txt"))
+                {
+                    long L2 = fs2.Length;
+                    using (BinaryReader reader = new BinaryReader(fs))
+                    {
+                        using (BinaryReader reader1 = new BinaryReader(fs2))
+                        {
+                            int counter = 0;
+                            byte array1;
+                            byte array2;
+                            while (counter < fs.Length)
+                            {
+                                array1 = reader.ReadByte();
+                                array2 = reader1.ReadByte();
+                                counter++;
+                                if (array2 != array1)
+                                {
+                                    Console.WriteLine(false);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            Console.ReadKey();
         }
     }
 }

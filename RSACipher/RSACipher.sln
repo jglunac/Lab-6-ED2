@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RSACipher", "RSACipher\RSACipher.csproj", "{8A823C8F-D8A0-41A3-A0AF-E8D08FEEDA89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{D48833DA-A8B0-4F2D-A7A8-F9DAC7B79247}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{D48833DA-A8B0-4F2D-A7A8-F9DAC7B79247}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\TestConsole.csproj", "{D6CAD881-1E89-41D0-B7AD-06FE6873AAB0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\TestConsole.csproj", "{1D72ADCA-302D-4DD6-8816-65A8712501DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{D48833DA-A8B0-4F2D-A7A8-F9DAC7B79247}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D48833DA-A8B0-4F2D-A7A8-F9DAC7B79247}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D48833DA-A8B0-4F2D-A7A8-F9DAC7B79247}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D6CAD881-1E89-41D0-B7AD-06FE6873AAB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D6CAD881-1E89-41D0-B7AD-06FE6873AAB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D6CAD881-1E89-41D0-B7AD-06FE6873AAB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D6CAD881-1E89-41D0-B7AD-06FE6873AAB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D72ADCA-302D-4DD6-8816-65A8712501DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D72ADCA-302D-4DD6-8816-65A8712501DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D72ADCA-302D-4DD6-8816-65A8712501DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D72ADCA-302D-4DD6-8816-65A8712501DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
