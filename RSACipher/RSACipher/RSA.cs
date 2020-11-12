@@ -107,7 +107,7 @@ namespace RSACipher
         public bool Cipher(string route, out byte[] cipheredMsg, RSAkey PublicKey)
         {
             N_bits = Convert.ToString(PublicKey.modulus, 2).Length;
-            if (PublicKey.modulus >0)
+            if (PublicKey.modulus >1)
             {
                 int ToReadBits = N_bits - 1;
                 e_number = PublicKey.power;
@@ -173,7 +173,7 @@ namespace RSACipher
                             Write_C(ToCipher, Calculate_C(ToCipher, PublicKey.modulus), true);
                             actualNumber = "";
                         }
-                        Write_C(0, Calculate_C(0, PublicKey.modulus), true);
+                        Write_C(-1, Calculate_C(0, PublicKey.modulus), true);
                     }
                 }
                 cipheredMsg = new byte[FinalBytes.Count];
@@ -199,7 +199,7 @@ namespace RSACipher
             int C_size;
             if (Cipher) C_size = N_bits;
             else C_size = N_bits - 1;
-            if (m_number != 0)
+            if (m_number != -1)
             {
                 binary_C = Convert.ToString(towrite, 2);
                 binary_C = binary_C.PadLeft(C_size, '0');
@@ -247,10 +247,10 @@ namespace RSACipher
         public bool Decipher(string route, out byte[] Message, RSAkey PrivateKey)
         {
             N_bits = Convert.ToString(PrivateKey.modulus, 2).Length;
-            if (PrivateKey.modulus > 0)
+            if (PrivateKey.modulus > 1)
             {
                 int ToReadBits;
-                if (PrivateKey.modulus >= 8) ToReadBits = N_bits;
+                if (N_bits >= 8) ToReadBits = N_bits;
                 else ToReadBits = 8;
                 e_number = PrivateKey.power;
                 bool exit = false;
