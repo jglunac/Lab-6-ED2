@@ -32,51 +32,51 @@ namespace TestConsole
 
             //string Path1 = @"C:\Users\brazi\Desktop\ESTRUCTURA DE DATOS II\cuento.txt";
 
-            RSA rSA1 = new RSA();
-            rSA1.GetKeys(7, 17, out RSAkey Priv, out RSAkey Pub);
-            bool cipher = true;
-            if (cipher)
-            {
-                string Path1 = @"C:\Users\brazi\Desktop\ESTRUCTURA DE DATOS II\easy test.txt";
-                string Path2 = @"C:\Users\brazi\Desktop\clavecifrado.txt";
-                RSA rSA = new RSA();
+            //RSA rSA1 = new RSA();
+            //rSA1.GetKeys(7, 17, out RSAkey Priv, out RSAkey Pub);
+            //bool cipher = true;
+            //if (cipher)
+            //{
+            //    string Path1 = @"C:\Users\brazi\Desktop\ESTRUCTURA DE DATOS II\easy test.txt";
+            //    string Path2 = @"C:\Users\brazi\Desktop\clavecifrado.txt";
+            //    RSA rSA = new RSA();
 
 
 
-                byte[] arr;
-                rSA.Cipher(Path1, out arr, Pub);
+            //    byte[] arr;
+            //    rSA.Cipher(Path1, out arr, Pub);
 
-                using (FileStream fs = new FileStream(Path2, FileMode.Create))
-                {
-                    for (int i = 0; i < arr.Length; i++)
-                    {
-                        fs.WriteByte(arr[i]);
-                    }
-                }
-            }
-            cipher = false;
-            if (!cipher)
-            {
-                string Path1 = @"C:\Users\brazi\Desktop\clavecifrado.txt";
-                string Path2 = @"C:\Users\brazi\Desktop\clavedescifrado.txt";
-                RSA rSA = new RSA();
+            //    using (FileStream fs = new FileStream(Path2, FileMode.Create))
+            //    {
+            //        for (int i = 0; i < arr.Length; i++)
+            //        {
+            //            fs.WriteByte(arr[i]);
+            //        }
+            //    }
+            //}
+            //cipher = false;
+            //if (!cipher)
+            //{
+            //    string Path1 = @"C:\Users\brazi\Desktop\clavecifrado.txt";
+            //    string Path2 = @"C:\Users\brazi\Desktop\clavedescifrado.txt";
+            //    RSA rSA = new RSA();
 
 
-                byte[] arr;
-                rSA.Decipher(Path1, out arr, Priv);
-                using (FileStream fs = new FileStream(Path2, FileMode.Create))
-                {
-                    for (int i = 0; i < arr.Length; i++)
-                    {
-                        fs.WriteByte(arr[i]);
-                    }
-                }
-            }
+            //    byte[] arr;
+            //    rSA.Decipher(Path1, out arr, Priv);
+            //    using (FileStream fs = new FileStream(Path2, FileMode.Create))
+            //    {
+            //        for (int i = 0; i < arr.Length; i++)
+            //        {
+            //            fs.WriteByte(arr[i]);
+            //        }
+            //    }
+            //}
 
-            using (FileStream fs = File.OpenRead(@"C:\Users\brazi\Desktop\ESTRUCTURA DE DATOS II\easy test.txt"))
+            using (FileStream fs = File.OpenRead(@"C:\Users\joseg\Desktop\Pruebas Cifrado\Descifrados\Cuentazo.txt"))
             {
                 long L = fs.Length;
-                using (FileStream fs2 = File.OpenRead(@"C:\Users\brazi\Desktop\clavedescifrado.txt"))
+                using (FileStream fs2 = File.OpenRead(@"C:\Users\joseg\Desktop\Pruebas Cifrado\Originales\cuento.txt"))
                 {
                     long L2 = fs2.Length;
                     using (BinaryReader reader = new BinaryReader(fs))

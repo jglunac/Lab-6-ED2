@@ -9,6 +9,7 @@ using System.IO.Compression;
 using RSACipher;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using System.Numerics;
 
 namespace API.Controllers
 {
@@ -77,12 +78,12 @@ namespace API.Controllers
                 }
                 return File(FileBytes, "application/zip", "Keys.zip");
 
-            }
+        }
             catch (Exception)
             {
                 return StatusCode(500);
-            }
-        }
+    }
+}
 
         [HttpPost]
         [Route("rsa/{name}")]
@@ -107,8 +108,8 @@ namespace API.Controllers
                 {
                     string base_string = reader.ReadToEnd();
                     string[] Key_Attributes = base_string.Split("|");
-                    Key.modulus = int.Parse(Key_Attributes[0]);
-                    Key.power = int.Parse(Key_Attributes[1]);
+                    Key.modulus = BigInteger.Parse(Key_Attributes[0]);
+                    Key.power = BigInteger.Parse(Key_Attributes[1]);
                 }
                 using (FileStream fs = System.IO.File.Create(TempFile))
                 {
@@ -131,11 +132,11 @@ namespace API.Controllers
                     }
                     return File(FileBytes, "text/plain", name + ".rsa");
                 }
-            }
+        }
             catch (Exception)
             {
                 return StatusCode(500);
-            }
-        }
+    }
+}
     }
 }
