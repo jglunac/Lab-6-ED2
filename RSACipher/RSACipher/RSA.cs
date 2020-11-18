@@ -24,6 +24,12 @@ namespace RSACipher
                     PublicKey = null;
                     return false;
                 }
+                if (N_number < 255)
+                {
+                    PrivateKey = null;
+                    PublicKey = null;
+                    return false;
+                }
 
                 phi = (p_Number - 1);
                 phi = phi * (q_Number - 1);
@@ -33,6 +39,10 @@ namespace RSACipher
                     if (e_number != -1)
                     {
                         Get_d();
+                        if (d == e_number)
+                        {
+                            d += N_number;
+                        }
                         PrivateKey = new RSAkey();
                         PrivateKey.modulus = N_number;
                         PrivateKey.power = d;
