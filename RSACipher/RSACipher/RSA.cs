@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace RSACipher
 {
-    public class RSA
+    public class RSA : ICipher
     {
         BigInteger phi;
         int e_number;
